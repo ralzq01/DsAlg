@@ -41,6 +41,7 @@ int main(){
     }
 
     if(commands[0] == "quit"){
+      net.quit();
       return 0;
     }
     else if(commands[0] == "detail"){
@@ -68,6 +69,7 @@ int main(){
     else if(commands[0] == "connect"){
       if(commands.size() != 3){
         std::cerr << "connect Usage: connect node_id_1 node_id_2" << std::endl;
+        continue;
       }
       NodeId id1, id2;
       try{
@@ -78,6 +80,38 @@ int main(){
         continue;
       }
       net.addConnection(id1, id2);
+    }
+    else if(commands[0] == "publish"){
+      if(commands.size() != 3){
+        std::cerr << "publish Usage: publish publish_id node_id" << std::endl;
+        continue;
+      }
+      PubId pub_id;
+      NodeId node_id;
+      try{
+        pub_id = std::stoi(commands[1]);
+        node_id = std::stoi(commands[2]);
+      }catch(std::exception e){
+        std::cerr << "publish Usage: publish publish_id node_id" << std::endl;
+        continue;
+      }
+      net.sendPublish(pub_id, node_id);
+    }
+    else if(commands[0] == "subscribe"){
+      if(commands.size() != 3){
+        std::cerr << "subscribe Usage: subscribe publish_id node_id" << std::endl;
+        continue;
+      }
+      PubId pub_id;
+      NodeId node_id;
+      try{
+        pub_id = std::stoi(commands[1]);
+        node_id = std::stoi(commands[2]);
+      }catch(std::exception e){
+        std::cerr << "subscribe Usage: subscribe publish_id node_id" << std::endl;
+        continue;
+      }
+      net.sendSubscribe(pub_id, node_id);
     }
     else{
       std::cerr << "Unknown Commands" << std::endl;

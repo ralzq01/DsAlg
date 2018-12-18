@@ -23,18 +23,22 @@ class SafeQueue {
   void push(T&& item) {
     std::lock_guard<std::mutex> lock(qmtx_);
     q_.push(item);
-    empty_.notify_one();
+    empty_.notify_all();
   }
 
   void push(T& item) {
     std::lock_guard<std::mutex> lock(qmtx_);
     q_.push(item);
-    empty_.notify_one();
+    empty_.notify_all();
   }
 
   void front(T& res) {
-    std::lock_guard<std::mutex> lock(qmtx_);
+    std::unique_lock<std::mutex> lock(qmtx_);
+    while(q_.empty()){
+      empty_.wait(lock);
+    }
     res = std::move(q_.front());
+    lock.unlock();
   }
 
   void pop() {
