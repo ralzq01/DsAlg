@@ -81,10 +81,10 @@ class Node{
         auto res = std::find(handled.begin(), handled.end(), msg.id);
         if(res == handled.end()){
           handled_log_[msg.source].push_back(msg.id);
-          printf("Node #%d recv msg: type: %d, source_id: %d, "\
-                 "from_id: %d, to_id: %d, pub_id: %d, msg_id: %d\n",
-                 id_, static_cast<int>(msg.type), msg.source,
-                 msg.from_node, msg.to_node, msg.pub_id, msg.id);
+          //printf("Node #%d recv msg: type: %d, source_id: %d, "\
+          //       "from_id: %d, to_id: %d, pub_id: %d, msg_id: %d\n",
+          //       id_, static_cast<int>(msg.type), msg.source,
+          //       msg.from_node, msg.to_node, msg.pub_id, msg.id);
           this->msgHandler(msg);
         }
         net_msg_->pop();

@@ -77,7 +77,7 @@ void Subscriber::sendRequest(int subscription_id){
     if(it.second == kBroker){
       this->send(subscription_id, it.first, Subscribe, new_msg);
       new_msg = false;
-      printf("send to #%d\n", it.first);
+      //printf("send to #%d\n", it.first);
     }
     subscriptions_.insert(subscription_id);
   }
