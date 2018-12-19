@@ -27,5 +27,5 @@ Each node will own one thread, and the whole network is in main thread.
 
 Network monitor will maintain a thread safe queue, which will collect sent messages from each node thread.
 
-Algorithom for communication protocol is based on Filtering. Also each node will maintain a log to avoid message twice retransmission.
+Algorithm for communication protocol is based on Filtering. Also each node will maintain a log to avoid message twice retransmission.
 
