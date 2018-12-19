@@ -6,16 +6,12 @@
 #include <unordered_set>
 #include <safequeue.hpp>
 #include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <chrono>
 #include <algorithm>
 
 using std::vector;
 template <typename T>
 using Set = std::unordered_set<T>;
 using NodeId = int;
-using SubId = int;
 using PubId = int;
 
 enum MsgType {Send = 0, Notify, Publish, Subscribe, Stop, Unknown};
@@ -163,7 +159,7 @@ class Broker: public Node{
   std::unordered_map<PubId, vector<NodeId> > routing_;
 
   // subscription table: for broker connected directly with subscriber
-  std::unordered_map<SubId, vector<NodeId> > subscriptions_;
+  std::unordered_map<PubId, vector<NodeId> > subscriptions_;
 };
 
 class Subscriber: public Node{
