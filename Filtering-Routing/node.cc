@@ -82,7 +82,7 @@ void Subscriber::sendRequest(int subscription_id){
 }
 
 void Subscriber::msgHandler(Msg& msg){
-  PubId pub_id = msg.id;
+  PubId pub_id = msg.pub_id;
   NodeId from_node = msg.from_node;
   switch(msg.type){
     case Notify: {
