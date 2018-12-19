@@ -86,9 +86,11 @@ class Node{
         auto res = std::find(handled.begin(), handled.end(), msg.id);
         if(res == handled.end()){
           handled_log_[msg.source].push_back(msg.id);
+          printf("Node #%d recv msg: type: %d, source_id: %d, "\
+                 "from_id: %d, to_id: %d, pub_id: %d, msg_id: %d\n",
+                 id_, static_cast<int>(msg.type), msg.source,
+                 msg.from_node, msg.to_node, msg.pub_id, msg.id);
           this->msgHandler(msg);
-          printf("Node #%d recv msg: type: %d, source_id: %d, from_id: %d, to_id: %d, pub_id: %d\n",
-                 id_, static_cast<int>(msg.type), msg.source, msg.from_node, msg.to_node, msg.pub_id);
         }
       }
       else{
@@ -104,11 +106,11 @@ class Node{
  protected:
 
   // send msg to to_id
-  virtual inline void send(PubId publish_id, NodeId to_id, MsgType type){
+  virtual inline void send(PubId publish_id, NodeId to_id, MsgType type, bool new_msg = true){
     Msg msg(type, this->id_, this->id_);
     msg.pub_id = publish_id;
     msg.to_node = to_id;
-    msg.id = msg_id_++;
+    msg.id = new_msg ? ++msg_id_ : msg_id_;
     net_msg_->push(msg);
   }
 

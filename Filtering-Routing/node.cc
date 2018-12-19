@@ -72,9 +72,11 @@ void Broker::msgHandler(Msg& msg){
 }
 
 void Subscriber::sendRequest(int subscription_id){
+  bool new_msg = true;
   for(const auto& it : this->neighbors_){
     if(it.second == kBroker){
-      this->send(subscription_id, it.first, Subscribe);
+      this->send(subscription_id, it.first, Subscribe, new_msg);
+      new_msg = false;
       printf("send to #%d\n", it.first);
     }
     subscriptions_.insert(subscription_id);
@@ -97,12 +99,14 @@ void Subscriber::msgHandler(Msg& msg){
 }
 
 void Publisher::sendNews(int publish_id){
+  bool new_msg = true;
   for(const auto& it : this->neighbors_){
     if(it.second == kSubscriber){
       this->send(publish_id, it.first, Notify);
     }
     else if(it.second == kBroker){
-      this->send(publish_id, it.first, Publish);
+      this->send(publish_id, it.first, Publish, new_msg);
+      new_msg = false;
     }
   }
 }
