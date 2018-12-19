@@ -133,6 +133,10 @@ class Net{
     }
   }
 
+  inline bool noMsg(){
+    return net_msg_.empty();
+  }
+
  private:
   
   vector<Broker*> brokers_;

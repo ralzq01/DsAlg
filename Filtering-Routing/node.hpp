@@ -74,7 +74,6 @@ class Node{
         break;
       }
       if(msg.to_node == this->id_){
-        net_msg_->pop();
         if(!handled_log_.count(msg.source)){
           handled_log_[msg.source] = vector<int>();
         }
@@ -88,6 +87,7 @@ class Node{
                  msg.from_node, msg.to_node, msg.pub_id, msg.id);
           this->msgHandler(msg);
         }
+        net_msg_->pop();
       }
       else{
         std::this_thread::sleep_for(std::chrono::milliseconds(10));

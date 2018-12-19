@@ -31,6 +31,9 @@ int main(){
   vector<string> commands;
 
   while(true){
+
+    while(!net.noMsg()){}
+
     std::cout << "> " << std::flush;
     // get new commands
     command.clear();
