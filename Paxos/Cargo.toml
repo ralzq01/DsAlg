@@ -1,0 +1,7 @@
+[package]
+name = "Paxos"
+version = "0.1.0"
+authors = ["ralzq01 <ralzq01@163.com>"]
+edition = "2018"
+
+[dependencies]
