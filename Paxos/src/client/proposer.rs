@@ -3,6 +3,7 @@
 use std::io::prelude::*;
 use std::net::TcpStream;
 use std::net::SocketAddr;
+use std::sync::{Mutex, Arc};
 
 #[path = "../node.rs"]
 mod node;
@@ -17,7 +18,7 @@ pub trait Propose {
 
 pub struct Client {
   id: u32,
-  server_sock_list: Vec<TcpStream>,
+  psocks: Arc<Mutex<Vec<TcpStream>>>,
   server_port_list: Vec<u16>,
   tickets: u32,
 }
@@ -29,6 +30,8 @@ impl Client {
     for idx in 0..server_port_list.len() {
       let addr = SocketAddr::from(([127, 0, 0, 1], server_port_list[idx]));
       if let Ok(sock) = TcpStream::connect(addr) {
+        sock.set_nonblocking(true)
+            .expect("client can't set nonblocking tcp stream");
         server_sock_list.push(sock);
       } else {
         println!("client can't connect with server port: {}", &server_port_list[idx]);
@@ -45,7 +48,7 @@ impl Client {
     }
     Client {
       id: id,
-      server_sock_list: server_sock_list,
+      psocks: Arc::new(Mutex::new(server_sock_list)),
       server_port_list: server_port_list,
       tickets: 0,
     }

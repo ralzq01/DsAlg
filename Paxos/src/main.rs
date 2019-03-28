@@ -5,6 +5,7 @@ use crate::client::proposer::Client;
 mod server;
 use crate::server::recipient::Server;
 
+use std::thread;
 
 fn main() {
     let server_num = 3;
@@ -24,5 +25,10 @@ fn main() {
     for id in 0..client_num {
         let client = Client::new(id, &server_port_list);
         client_list.push(client);
+    }
+
+    // test for sending message
+    for server in &server_list {
+        server.print_recv();
     }
 }
