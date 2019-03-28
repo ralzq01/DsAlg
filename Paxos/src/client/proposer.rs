@@ -1,38 +1,56 @@
+#![allow(unused)]
+
 use std::io::prelude::*;
 use std::net::TcpStream;
 use std::net::SocketAddr;
 
-use crate::node::Node;
+#[path = "../node.rs"]
+mod node;
+use self::node::Node;
 
 pub trait Propose {
   /// propose a method and ticket to all servers
-  fn propose(&self, method: &str, ticket: u32) {
-    
+  fn propose(&self, method: &str, ticket: u32) -> std::io::Result<()> {
+    Ok(())
   }
 }
 
 pub struct Client {
-  port: u32,  // self port
+  id: u32,
   server_sock_list: Vec<TcpStream>,
-  server_port_list: Vec<u32>,
+  server_port_list: Vec<u16>,
   tickets: u32,
 }
 
 impl Client {
-  pub fn new(port: u32, server_port_list: &Vec<u32>) -> Client {
+  pub fn new(id: u32, server_port_list: &Vec<u16>) -> Client {
     let mut server_sock_list = vec![];
     let mut fail_port_idx = vec![];
-    for idx in (0..server_port_list.len()) {
-      let addrs = SocketAddr::from(([127, 0, 0, 1], server_port_list[idx]));
-      if let mut Ok(sock) = TcpStream::connect(&addrs) {
+    for idx in 0..server_port_list.len() {
+      let addr = SocketAddr::from(([127, 0, 0, 1], server_port_list[idx]));
+      if let Ok(sock) = TcpStream::connect(addr) {
         server_sock_list.push(sock);
       } else {
-        println!("client port: {} can't connect with server port: {}", port, server_port);
+        println!("client can't connect with server port: {}", &server_port_list[idx]);
         fail_port_idx.push(idx);
       }
+    }
+    // remove the failed nodes on server prot list
+    let mut server_port_list = server_port_list.clone();
+    if fail_port_idx.len() > 0 {
+      println!("warning: client {} can't connect {} servers", &id, fail_port_idx.len());
+    }
+    while let Some(fail_idx) =  fail_port_idx.pop() {
+      server_port_list.remove(fail_idx);
+    }
+    Client {
+      id: id,
+      server_sock_list: server_sock_list,
+      server_port_list: server_port_list,
+      tickets: 0,
     }
   }
 }
 
-impl Node for Client;
+impl Node for Client {}
 
