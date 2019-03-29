@@ -5,11 +5,12 @@ use crate::client::proposer::Client;
 mod server;
 use crate::server::recipient::Server;
 
-use std::thread;
+mod node;
+use crate::node::Node;
 
 fn main() {
-    let server_num = 3;
-    let client_num = 3;
+    let server_num = 2;
+    let client_num = 2;
     let server_port_list : Vec<u16> = (8020..8020+server_num).collect();
     let mut server_list = vec![];
     let mut client_list = vec![];
@@ -31,4 +32,10 @@ fn main() {
     for server in &server_list {
         server.print_recv();
     }
+    for client in &client_list {
+        let msg = format!("client {} broadcasts", client.id);
+        client.broadcast(msg.as_str());
+    }
+
+    loop {}
 }
